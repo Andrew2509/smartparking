@@ -6,6 +6,7 @@ Aplikasi mobile berbasis **Flutter** untuk memantau ketersediaan slot parkir sec
 
 ## 📋 Daftar Isi
 - [Fitur Utama](#-fitur-utama)
+- [Arsitektur Sistem & Skema Hardware](#-arsitektur-sistem--skema-hardware)
 - [Prasyarat Sistem](#-prasyarat-sistem)
 - [Langkah Instalasi (Dari Clone ke Run)](#-langkah-instalasi-dari-clone-ke-run)
 - [Konfigurasi Server / Backend API](#-konfigurasi-server--backend-api)
@@ -25,6 +26,31 @@ Aplikasi mobile berbasis **Flutter** untuk memantau ketersediaan slot parkir sec
 - **Peta Lokasi Interaktif:** Integrasi peta (*OpenStreetMap* via `flutter_map`) untuk melihat titik lokasi parkir dan status node sensor aktif.
 - **Konfigurasi API Fleksibel:** Pengaturan Base URL API langsung dari dalam aplikasi tanpa perlu compile ulang (tersimpan di *SharedPreferences*).
 - **Preset Alamat Server:** Pilihan cepat untuk Android Emulator, Localhost, dan Local Wi-Fi.
+
+---
+
+## 📐 Arsitektur Sistem & Skema Hardware
+
+### 1. Skema Hardware IoT (ESP32 & Sensor Ultrasonik HC-SR04)
+Rangkaian mikrokontroler ESP32 DevKit V1 yang terhubung ke 4 sensor ultrasonik HC-SR04 melalui breadboard untuk mendeteksi keberadaan kendaraan pada masing-masing slot parkir:
+
+<p align="center">
+  <img src="docs/skema_hardware.png" alt="Skema Hardware IoT Smart Parking" width="700"/>
+</p>
+
+### 2. Arsitektur Sistem 3-Tier
+Alur arsitektur menyeluruh dari Hardware Layer (ESP32 & Sensor HC-SR04), Middleware/Backend Layer (Node.js & Express.js REST API / SSE), hingga Presentation Layer (Web Dashboard & Flutter Mobile App):
+
+<p align="center">
+  <img src="docs/mermaid-diagram-2026-06-29-073609.png" alt="Arsitektur Sistem IoT Smart Parking" width="850"/>
+</p>
+
+### 3. Diagram Alur Data & Protokol Komunikasi
+Rincian transmisi data mulai dari pembacaan sinyal jarak sensor (`pulseIn`), pengiriman payload JSON via HTTP POST (Wi-Fi 2.4 GHz), penyimpanan in-memory RAM, hingga distribusi data real-time via Server-Sent Events (SSE) dan REST API HTTP Polling ke klien:
+
+<p align="center">
+  <img src="docs/mermaid-diagram-2026-06-29-074023.png" alt="Diagram Alur Data dan Protokol Komunikasi" width="850"/>
+</p>
 
 ---
 
@@ -171,6 +197,10 @@ Kirim file APK tersebut ke smartphone Android Anda dan lakukan instalasi.
 ```
 smartparking/
 ├── android/               # Konfigurasi native Android & Gradle
+├── docs/                  # Dokumentasi skema hardware & diagram arsitektur
+│   ├── mermaid-diagram-2026-06-29-073609.png
+│   ├── mermaid-diagram-2026-06-29-074023.png
+│   └── skema_hardware.png
 ├── lib/
 │   ├── main.dart          # Entry point aplikasi & tema Material 3
 │   ├── screens/
